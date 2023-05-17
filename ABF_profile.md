@@ -124,10 +124,12 @@ X509 certificates are NOT supported.
 
 Implementers will find several libs to resolve those DIDs locally in issuer, verififers and wallets and the [Universal Resolver](https://dev.uniresolver.io/) maybe used as an simple but centralized almlternative solution.
 
+### Orange proposal for legal entities
 The goal will be to reuse eIDAS digital certificates for identity binding, it does not make sense to “invent” identifiers or to promote the usage of different DID methods that are not well integrated with eIDAS certificates and that generate identifiers which are not in general legally recognised in the EU for economic transactions (e.g., that can be used in electronic invoices across the EU).
 
 In general, an ecosystem may accept one or more DID methods and their associated DID resolution mechanisms (e.g., did:web, did:peer, etc.). For Legal Persons, we propose that the main method used is did:elsi (ETSI Legal person Semantic Identifier Method Specification), which uses as identifiers the same identifiers that are already embedded in the eIDAS certificates that conform to the relevant ETSI standards. The main concepts of the did:elsi method is described below.
 
+#### ETSI :
 ETSI EN 319 412-3 V1.2.1 (2020-07) “Electronic Signatures and Infrastructures (ESI); Certificate Profiles; Part 3: Certificate profile for certificates issued to legal persons” states:
 The subject field shall include at least the following attributes as specified in Recommendation ITU-T X.520: 
 * countryName
@@ -156,7 +158,9 @@ Two characters according to local definition within the specified country and na
 
 Other initial character sequences are reserved for future amendments of the present document. In case "VAT" legal person identity type reference is used in combination with the "EU" transnational country code, the identifier value should comply with Council Directive 2006/112/EC [i.12], article 215.
 
-That means that any eIDAS digital certificate issued by TSPs to legal persons compliant with the ETSI standards including an organizationIdentifier attribute can be used to trivially derive a DID from the ETSI standard identifier by applying the following rule:
+
+#### Examples :
+An"y eIDAS digital certificate issued by TSPs to legal persons compliant with the ETSI standards including an organizationIdentifier attribute can be used to trivially derive a DID from the ETSI standard identifier by applying the following rule:
 * did:elsi:organizationIdentifier
 * Some examples of DIDs are:
 * Gaia-X: did:elsi:VATBE-0762747721
@@ -166,10 +170,12 @@ That means that any eIDAS digital certificate issued by TSPs to legal persons co
 * Digitel TS: did:elsi:VATES-B47447560
 * FIWARE Foundation: did:elsi:VATDE-309937516
 * TNO: did:elsi:LEIXG-724500AZSGBRY55MNS59
+
 Where:
-“did” is the W3C did uri scheme.
-“elsi” stands for ETSI Legal Semantic Identifier, which is the acronym for the name for this type of identifier used in the ETSI documents.
-“organizationIdentifier” is the exact identifier specified in the ETSI standard, and that can evolve with the standard to support any future requirement.
+* “did” is the W3C did uri scheme.
+* “elsi” stands for ETSI Legal Semantic Identifier, which is the acronym for the name for this type of identifier used in the ETSI documents.
+* “organizationIdentifier” is the exact identifier specified in the ETSI standard, and that can evolve with the standard to support any future requirement.
+
 Proving the control of an ELSI DID can be done using the associated digital certificate: including the certificate with any signature can do that. By the way, this means that any existing digital signature of any type of document (not only Verifiable Credentials) is already compliant with this DID method specification, just by making the corresponding translation
 In other words: any legal person can have a standard eIDAS certificate with an automatically associated DID identifier complying with the ELSI did method specification. There is no need to invent new identifiers or have a central entity in a Data Space assign identifiers to participants.
 
