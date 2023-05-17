@@ -160,8 +160,10 @@ Other initial character sequences are reserved for future amendments of the pres
 
 
 #### Examples :
-An"y eIDAS digital certificate issued by TSPs to legal persons compliant with the ETSI standards including an organizationIdentifier attribute can be used to trivially derive a DID from the ETSI standard identifier by applying the following rule:
-* did:elsi:organizationIdentifier
+Any eIDAS digital certificate issued by TSPs to legal persons compliant with the ETSI standards including an organizationIdentifier attribute can be used to trivially derive a DID from the ETSI standard identifier by applying the following rule:
+
+did:elsi:organizationIdentifier
+
 * Some examples of DIDs are:
 * Gaia-X: did:elsi:VATBE-0762747721
 * International Data Spaces: did:elsi:VATDE-325984196
@@ -170,6 +172,7 @@ An"y eIDAS digital certificate issued by TSPs to legal persons compliant with th
 * Digitel TS: did:elsi:VATES-B47447560
 * FIWARE Foundation: did:elsi:VATDE-309937516
 * TNO: did:elsi:LEIXG-724500AZSGBRY55MNS59
+* Orange Business : did:elsi:VATFR-26345039416
 
 Where:
 * “did” is the W3C did uri scheme.
@@ -177,7 +180,7 @@ Where:
 * “organizationIdentifier” is the exact identifier specified in the ETSI standard, and that can evolve with the standard to support any future requirement.
 
 Proving the control of an ELSI DID can be done using the associated digital certificate: including the certificate with any signature can do that. By the way, this means that any existing digital signature of any type of document (not only Verifiable Credentials) is already compliant with this DID method specification, just by making the corresponding translation
-In other words: any legal person can have a standard eIDAS certificate with an automatically associated DID identifier complying with the ELSI did method specification. There is no need to invent new identifiers or have a central entity in a Data Space assign identifiers to participants.
+In other words: any legal person can have a standard eIDAS certificate with an automatically associated DID identifier complying with the ELSI did method specification. There is no need to invent new identifiers.
 
 
 ### Cryptographic Keys and Signatures
