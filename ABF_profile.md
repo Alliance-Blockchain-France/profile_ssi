@@ -190,24 +190,33 @@ cf https://www.rfc-editor.org/rfc/rfc7518#page-6 pour voir ce que l'on garde et 
 
 ## Protocols
 
- ### to present verifiable credentials (and user authentication)  
+ ### To present verifiable credentials (and user authentication)  
    * SIOPv2
 
 
-### to exchange verifiable credentials/presentations
+### To exchange verifiable credentials/presentations
    * OIDC4VP
 
 
-### to issue credentials
- 
+### To issue credentials
+
 The OIDC4VCI (OpenID for Verifiable Credential Issuance) protocol is the latest protocol that has been specified by the OpenID working group for SSI. It was modified many times in 2002 to now be stabilized. It brings many new features to the original openID specification. In particular, it offers new endpoints (credential offer, deferred, batch) and a new flow (pre eutheoriozed code flow) to the classic authorization code flow.
 
-#### Pre euthorized code flow vs authorized code flow
+cf https://openid.net/specs/openid-4-verifiable-credential-issuance-1_0.html  
 
-Authorization code flow: this flow is used when the user is not already authenticated by the issuer. The first step of this flow is "front channel" which means it happens in the user's browser "user and is to authenticate the user. The issuer takes over to offer a means of authentication which can be traditional (login/password) or even through the wallet (see below the integration of a verifier in the authentication phase). When this authentication is carried out, a code transferred to the endpoint of the wallet redirect (possibly a deep link).
+In this flow the issuer plays the role of the Identity Provider and the holder(wallet) the client or RP.
 
-Pre Authorized Code Flow : The issuer can also skip the authentication and use pre-authorised flow. This is intended for use cases where the issuer's website ultimately results in one or more credentials to be shared. Pre-authorisation will also use the same Initiate Issuance Request and endpoint but will add the mandatory pre-authorized_code and optional user_pin_required parameters into the request. User PIN code must be delivered through other channels, as the QR code or request can be intercepted.
+#### Pre Authorized Code Flow vs Authorized Code Flow
 
+Authorization code flow: this flow is used when the user is not already authenticated by the issuer. The first step of this flow is "front channel" which means it happens in the user's browser and is to authenticate the user. The issuer takes over to offer a means of authentication which can be traditional (login/password) or even through the wallet (see below the integration of a verifier in the authentication phase). When this authentication is carried out, a code transferred to the endpoint of the wallet redirect (possibly a deep link).
+
+Pre Authorized Code Flow : The issuer can also skip the authentication and use pre-authorised flow in particular when the user was previously authenticated by a traditionnal means of authentication. This is intended for use cases where the issuer's website ultimately results in one or more credentials to be shared. 
+
+Both flows will also use the same Initiate Issuance Request and endpoint but pre authorized code flow will add the mandatory pre-authorized_code and optional user_pin_required parameters into the request. User PIN code must be delivered through other channels (SMS, email, mobile notification, QR code,...) or request can be intercepted.  
+
+#### Issuer becoming a verifier for user authentication
+
+If the issuer wishes to obtain verifiable credentials from the user for his authentication, it is possible to integrate a presentation request issued by the issuer himself according to SIOPV2. The issuer then becomes a verifier. When authentication is over the issuer sends back the grant code to the hloder (wallet) as requested by the authorization code flow.
 
 ## Wallet
 * key management -> import/export
