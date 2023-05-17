@@ -142,6 +142,17 @@ RSA
 
 Implementations MUST support the P-256 curve with ES256 signature scheme as [RFC7518](https://www.rfc-editor.org/rfc/rfc7518).
 
+### Delegation with DIDs
+
+Delegation is a subject that comes up quite often that has several implementation solutions. Delegation using the DID document is one of them. On the other hand, it is without attenuation, which means that the party delegating cannot minimize the role of the party benefiting from the delegation.  
+
+The implementation is simple: Alice wishes to delegate to Bob the use of one of her VCs to access a service :
+
+* Alice adds a public key (verification method) given to her by Bob to her DID Document
+* Alice gives to Bob the VC needed to access the service
+* Bob presents a verifiable presentation in which he puts Alice's VC, with the "holder" attribute Alice's DID and signs with the key that was added to Alice's DID Document
+
+Other implementations of delegation are possible through specific VCs.
 
 ## Verifiable Credentials
 
@@ -188,9 +199,14 @@ cf https://www.rfc-editor.org/rfc/rfc7518#page-6 pour voir ce que l'on garde et 
 
 
 ### to issue credentials
-   * OIDC4VCI
+ 
+The OIDC4VCI (OpenID for Verifiable Credential Issuance) protocol is the latest protocol that has been specified by the OpenID working group for SSI. It was modified many times in 2002 to now be stabilized. It brings many new features to the original openID specification. In particular, it offers new endpoints (credential offer, deferred, batch) and a new flow (pre eutheoriozed code flow) to the classic authorization code flow.
 
+#### Pre euthorized code flow vs authorized code flow
 
+Authorization code flow: this flow is used when the user is not already authenticated by the issuer. The first step of this flow is "front channel" which means it happens in the user's browser "user and is to authenticate the user. The issuer takes over to offer a means of authentication which can be traditional (login/password) or even through the wallet (see below the integration of a verifier in the authentication phase). When this authentication is carried out, a code transferred to the endpoint of the wallet redirect (possibly a deep link).
+
+Pre Authorized Code Flow : The issuer can also skip the authentication and use pre-authorised flow. This is intended for use cases where the issuer's website ultimately results in one or more credentials to be shared. Pre-authorisation will also use the same Initiate Issuance Request and endpoint but will add the mandatory pre-authorized_code and optional user_pin_required parameters into the request. User PIN code must be delivered through other channels, as the QR code or request can be intercepted.
 
 
 ## Wallet
