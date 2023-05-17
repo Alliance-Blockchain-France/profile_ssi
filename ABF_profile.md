@@ -11,7 +11,7 @@ This document is not a specification, but a profile. It outlines existing specif
 * Thierry Thevenet (Talao)
 * Christophe Gervais (Agdatahub)
 * Christine Hennebert (Nanoelec)
-* ?
+* Antoine Maisonneuve (Orange)
 
 ## Table of Contents
 
