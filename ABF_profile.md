@@ -202,7 +202,19 @@ AUtre source DIF wg wallet security https://identity.foundation/working-groups/w
 * No mobile wallet onboarding  
 * user binding requirement -> authentication mode to be defined
 
+## Issuer registries
 
+Each member generates its did through https://w3c-ccg.github.io/did-method-web/
+This did should be resolved (verified) through https://dev.uniresolver.io/
+
+Data format:
+* list of did used
+* company name
+* SIREN
+
+Documentation of EBSI issuer registry:
+https://api-pilot.ebsi.eu/docs/apis/trusted-issuers-registry/latest#/operations/post-ledger-v2-blockchains-besu
+https://api-pilot.ebsi.eu/docs/apis/trusted-issuers-registry/latest#/operations/get-trusted-issuers-registry-v4-issuers-did-attributes
 
 
 ## Verifiable data registries
