@@ -292,9 +292,20 @@ Each member generates its did through https://w3c-ccg.github.io/did-method-web/
 This did should be resolved (verified) through https://dev.uniresolver.io/
 
 Data format:
+* Enterprise name
+* International enterprise name
+* SIRET / SIREN
+* TVA
 * list of did used
-* company name
-* SIREN
+
+Smart Contract content:
+* **Whitelist** of authorized members to register new issuers (3 ethereum addresses)
+* A **"Register" function** that takes issuer data (see data format above) as parameters and stores them in a mapping (did --> data)
+* A **"getter" function** to retrieve issuer information from provided did 
+
+API methods:
+* **POST** - create new issuer - body : _issuer data according to the format above (json)_
+* **GET** - parameters : _did_ - response : _issuer data (json)_
 
 Documentation of EBSI issuer registry:
 https://api-pilot.ebsi.eu/docs/apis/trusted-issuers-registry/latest#/operations/post-ledger-v2-blockchains-besu
