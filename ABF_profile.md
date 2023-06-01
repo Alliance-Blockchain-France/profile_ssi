@@ -11,7 +11,7 @@ This document is not a specification, but a profile. It outlines existing specif
 * Thierry Thevenet (Talao)
 * Christophe Gervais (Agdatahub)
 * Christine Hennebert (Nanoelec)
-* ?
+* Antoine Maisonneuve (Orange)
 
 ## Table of Contents
 
@@ -124,6 +124,65 @@ X509 certificates are NOT supported.
 
 Implementers will find several libs to resolve those DIDs locally in issuer, verififers and wallets and the [Universal Resolver](https://dev.uniresolver.io/) maybe used as an simple but centralized almlternative solution.
 
+### Orange proposal for legal entities
+The goal will be to reuse eIDAS digital certificates for identity binding, it does not make sense to “invent” identifiers or to promote the usage of different DID methods that are not well integrated with eIDAS certificates and that generate identifiers which are not in general legally recognised in the EU for economic transactions (e.g., that can be used in electronic invoices across the EU).
+
+In general, an ecosystem may accept one or more DID methods and their associated DID resolution mechanisms (e.g., did:web, did:peer, etc.). For Legal Persons, we propose that the main method used is did:elsi (ETSI Legal person Semantic Identifier Method Specification), which uses as identifiers the same identifiers that are already embedded in the eIDAS certificates that conform to the relevant ETSI standards. The main concepts of the did:elsi method is described below.
+
+#### ETSI :
+ETSI EN 319 412-3 V1.2.1 (2020-07) “Electronic Signatures and Infrastructures (ESI); Certificate Profiles; Part 3: Certificate profile for certificates issued to legal persons” states:
+The subject field shall include at least the following attributes as specified in Recommendation ITU-T X.520: 
+* countryName
+* organizationName
+* organizationIdentifier and
+* commonName
+
+And regarding the organizationIdentifier attribute it says:
+"The organizationIdentifier attribute shall contain an identification of the subject organization different from the organization name. Certificates may include one or more semantics identifiers as specified in clause 5 of ETSI EN 319 412-1 [i.4]."
+
+And the document referenced, ETSI EN 319 412-1 V1.4.2 (2020-07) “Electronic Signatures and Infrastructures (ESI); Certificate Profiles; Part 1: Overview and common data structures” states:
+
+When the legal person semantics identifier is included, any present organizationIdentifier attribute in the subject field shall contain information using the following structure in the presented order: 
+* 3 character legal person identity type reference
+* 2 character ISO 3166 [2] country code 
+* hyphen-minus "-" (0x2D (ASCII), U+002D (UTF-8)) and
+* identifier (according to country and identity type reference)
+
+The three initial characters shall have one of the following defined values: 
+1.	"VAT" for identification based on a national value added tax identification number. 
+2.	"NTR" for identification based on an identifier from a national trade register. 
+3.	"PSD" for identification based on the national authorization number of a payment service provider under Payments Services Directive (EU) 2015/2366 [i.13]. This shall use the extended structure as defined in ETSI TS 119 495 [3], clause 5.2.1.
+
+"LEI" for a global Legal Entity Identifier as specified in ISO 17442 [4]. The 2 character ISO 3166 [2] country code shall be set to 'XG'.
+Two characters according to local definition within the specified country and name registration authority, identifying a national scheme that is considered appropriate for national and European level, followed by the character ":" (colon). 
+
+Other initial character sequences are reserved for future amendments of the present document. In case "VAT" legal person identity type reference is used in combination with the "EU" transnational country code, the identifier value should comply with Council Directive 2006/112/EC [i.12], article 215.
+
+
+#### Examples :
+Any eIDAS digital certificate issued by TSPs to legal persons compliant with the ETSI standards including an organizationIdentifier attribute can be used to trivially derive a DID from the ETSI standard identifier by applying the following rule:
+
+did:elsi:organizationIdentifier
+
+* Some examples of DIDs are:
+* Gaia-X: did:elsi:VATBE-0762747721
+* International Data Spaces: did:elsi:VATDE-325984196
+* Alastria: did:elsi:VATES-G87936159
+* IN2: did:elsi:VATES-B60645900
+* Digitel TS: did:elsi:VATES-B47447560
+* FIWARE Foundation: did:elsi:VATDE-309937516
+* TNO: did:elsi:LEIXG-724500AZSGBRY55MNS59
+* Orange Business : did:elsi:VATFR-26345039416
+
+Where:
+* “did” is the W3C did uri scheme.
+* “elsi” stands for ETSI Legal Semantic Identifier, which is the acronym for the name for this type of identifier used in the ETSI documents.
+* “organizationIdentifier” is the exact identifier specified in the ETSI standard, and that can evolve with the standard to support any future requirement.
+
+Proving the control of an ELSI DID can be done using the associated digital certificate: including the certificate with any signature can do that. By the way, this means that any existing digital signature of any type of document (not only Verifiable Credentials) is already compliant with this DID method specification, just by making the corresponding translation
+In other words: any legal person can have a standard eIDAS certificate with an automatically associated DID identifier complying with the ELSI did method specification. There is no need to invent new identifiers.
+
+
 ### Cryptographic Keys and Signatures
 
 Supported digital signature are JWS as defined in [RFC715](https://datatracker.ietf.org/doc/html/rfc7515). JSON Web Signature (JWS) represents content secured with digital signatures using JSON-based data structure (JWT).
@@ -142,6 +201,17 @@ RSA
 
 Implementations MUST support the P-256 curve with ES256 signature scheme as [RFC7518](https://www.rfc-editor.org/rfc/rfc7518).
 
+### Delegation with DIDs
+
+Delegation is a subject that comes up quite often that has several implementation solutions. Delegation using the DID document is one of them. On the other hand, it is without attenuation, which means that the party delegating cannot minimize the role of the party benefiting from the delegation.  
+
+The implementation is simple: Alice wishes to delegate to Bob the use of one of her VCs to access a service :
+
+* Alice adds a public key (verification method) given to her by Bob to her DID Document
+* Alice gives to Bob the VC needed to access the service
+* Bob presents a verifiable presentation in which he puts Alice's VC, with the "holder" attribute Alice's DID and signs with the key that was added to Alice's DID Document
+
+Other implementations of delegation are possible through specific VCs.
 
 ## Verifiable Credentials
 
@@ -179,19 +249,33 @@ cf https://www.rfc-editor.org/rfc/rfc7518#page-6 pour voir ce que l'on garde et 
 
 ## Protocols
 
- ### to present verifiable credentials (and user authentication)  
+ ### To present verifiable credentials (and user authentication)  
    * SIOPv2
 
 
-### to exchange verifiable credentials/presentations
+### To exchange verifiable credentials/presentations
    * OIDC4VP
 
 
-### to issue credentials
-   * OIDC4VCI
+### To issue credentials
 
+The OIDC4VCI (OpenID for Verifiable Credential Issuance) protocol is the latest protocol that has been specified by the OpenID working group for SSI. It was modified many times in 2002 to now be stabilized. It brings many new features to the original openID specification. In particular, it offers new endpoints (credential offer, deferred, batch) and a new flow (pre eutheoriozed code flow) to the classic authorization code flow.
 
+cf https://openid.net/specs/openid-4-verifiable-credential-issuance-1_0.html  
 
+In this flow the issuer plays the role of the Identity Provider and the holder(wallet) the client or RP.
+
+#### Pre Authorized Code Flow vs Authorized Code Flow
+
+Authorization code flow: this flow is used when the user is not already authenticated by the issuer. The first step of this flow is "front channel" which means it happens in the user's browser and is to authenticate the user. The issuer takes over to offer a means of authentication which can be traditional (login/password) or even through the wallet (see below the integration of a verifier in the authentication phase). When this authentication is carried out, a code transferred to the endpoint of the wallet redirect (possibly a deep link).
+
+Pre Authorized Code Flow : The issuer can also skip the authentication and use pre-authorised flow in particular when the user was previously authenticated by a traditionnal means of authentication. This is intended for use cases where the issuer's website ultimately results in one or more credentials to be shared. 
+
+Both flows will also use the same Initiate Issuance Request and endpoint but pre authorized code flow will add the mandatory pre-authorized_code and optional user_pin_required parameters into the request. User PIN code must be delivered through other channels (SMS, email, mobile notification, QR code,...) or request can be intercepted.  
+
+#### Issuer becoming a verifier for user authentication
+
+If the issuer wishes to obtain verifiable credentials from the user for his authentication, it is possible to integrate a presentation request issued by the issuer himself according to SIOPV2. The issuer then becomes a verifier. When authentication is over the issuer sends back the grant code to the hloder (wallet) as requested by the authorization code flow.
 
 ## Wallet
 * key management -> import/export
